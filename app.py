@@ -316,9 +316,15 @@ def request_entity_too_large(e):
     flash(f"File too large (Max: {limit_mb:.0f}MB).")
     return redirect(url_for('index'))
 
-# Ensure upload folder exists (safe for Vercel)
-try:
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    logging.info(f"Upload directory '{app.config['UPLOAD_FOLDER']}' ensured.")
-except OSError as e:
-    logging.error(f"Could not create upload directory: {e}")
+# --- Main Execution ---
+if __name__ == '__main__':
+    # (Keep existing startup logic)
+    try:
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        logging.info(f"Upload directory '{app.config['UPLOAD_FOLDER']}' ensured.")
+    except OSError as e:
+        logging.error(f"Could not create upload directory: {e}")
+
+    DEBUG_MODE = os.getenv('FLASK_DEBUG', 'False').lower() in ('true', '1', 't')
+    logging.info(f"Starting Flask app (Debug mode: {DEBUG_MODE})")
+    app.run(debug=DEBUG_MODE, host='0.0.0.0', port=5000)
